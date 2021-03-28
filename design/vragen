@@ -1,0 +1,9 @@
+ 
+Invoer   =  RGB afbleelding. Zichtbaar is de rolplaat en de metalen bal die rondgerolt moet worden.
+Uitvoer  =  struct BalData{
+                Vector2d    pos,
+                Vector2d    pos_next_frame,
+                double      accelleration
+}
+
+Hoe worden cirkels herkend in OpenCV?
