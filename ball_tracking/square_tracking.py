@@ -5,7 +5,8 @@ import imutils
 import time
 
 #Start webcam
-vs = VideoStream(src=0).start()
+vs = VideoStream(src=0, usePiCamera=True,
+		resolution=(640,480), framerate=90)).start()
 
 def toPointList(ndArr):
     return [tuple(i[0]) for i in ndArr]
@@ -107,6 +108,8 @@ def main():
         start_time = time.time()
         #640, 480
         image = vs.read()
+	if image is None:
+		continue
         ratio = image.shape[0] / 400.0 # 1.???
         orig = image.copy()
         
