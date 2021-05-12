@@ -5,6 +5,7 @@ import imutils
 import time
 
 IS_PI = False
+USE_GUI = False
 
 #Start webcam
 if IS_PI:
@@ -66,12 +67,14 @@ def main():
         x_norm = x / image.shape[1]
         y_norm = y / image.shape[0]
 
+        
+        if USE_GUI:
         # Point to it
-        cv2.putText(image, str(round(x_norm, 3))+","+str(round(y_norm, 3)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1)
+            cv2.putText(image, str(round(x_norm, 3))+","+str(round(y_norm, 3)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1)
 
-        cv2.imshow("Input feed", orig)
-        cv2.imshow("Mask", mask)
-        cv2.imshow("Result", image)
+            cv2.imshow("Input feed", orig)
+            cv2.imshow("Mask", mask)
+            cv2.imshow("Result", image)
 
         # Keep track of FPS
         newtime = time.time()
