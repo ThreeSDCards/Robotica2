@@ -54,6 +54,7 @@ def main():
         
         hsv = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, blue_min, blue_max)
+
         # Found it lmao
         res = find_ball(image, mask)
         if res is None:

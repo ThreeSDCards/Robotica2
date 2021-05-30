@@ -118,7 +118,6 @@ def main():
         
         gray = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2GRAY)
 
-        #f = cv2.getTrackbarPos("Filter", "Sliders")
         _, mask= cv2.threshold(gray, 70, 255, cv2.THRESH_BINARY_INV)
         mask = cv2.GaussianBlur(mask, (3,3), cv2.BORDER_DEFAULT)
 
