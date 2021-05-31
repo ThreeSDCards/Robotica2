@@ -3,9 +3,16 @@ import numpy as np
 from imutils.video import VideoStream
 import imutils
 import time
+import serial
+from manager import Manager
 
 IS_PI = False
 USE_GUI = False
+
+class Ball:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 #Start webcam
 if IS_PI:
@@ -41,6 +48,8 @@ def nothing(x):
 blue_min = (90, 155, 60)
 blue_max = (160, 255, 255)
 
+mark = Manager()
+
 def main():
     while True:
         start_time = time.time()
@@ -69,6 +78,11 @@ def main():
         y_norm = y / image.shape[0]
 
         
+        # Keep track of FPS
+        newtime = time.time()
+        delta_time = newtime - start_time
+        start_time = newtime
+
         if USE_GUI:
         # Point to it
             cv2.putText(image, str(round(x_norm, 3))+","+str(round(y_norm, 3)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1)
@@ -76,15 +90,9 @@ def main():
             cv2.imshow("Input feed", orig)
             cv2.imshow("Mask", mask)
             cv2.imshow("Result", image)
-        
-            # Keep track of FPS
-            newtime = time.time()
-            print("Delta: {}".format(  str(1/( newtime - start_time))))
-            start_time = newtime
-
-        else:
-            print("X: {0} Y: {1}".format(str(2.0*x - 1.0), str(2.0*y - 1.0)))
-
+            
+        ball = Ball((x_norm * 1.8) - 1, (y_norm * 1.8) - 1)
+        mark.send(ball, delta_time)
         
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
