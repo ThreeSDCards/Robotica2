@@ -76,12 +76,16 @@ def main():
             cv2.imshow("Input feed", orig)
             cv2.imshow("Mask", mask)
             cv2.imshow("Result", image)
+        
+            # Keep track of FPS
+            newtime = time.time()
+            print("Delta: {}".format(  str(1/( newtime - start_time))))
+            start_time = newtime
 
-        # Keep track of FPS
-        newtime = time.time()
-        print("Delta: {}".format(  str(1/( newtime - start_time))))
-        start_time = newtime
+        else:
+            print("X: {0} Y: {1}".format(str(2.0*x - 1.0), str(2.0*y - 1.0)))
 
+        
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
