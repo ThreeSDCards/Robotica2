@@ -1,26 +1,19 @@
 import cv2
 import numpy as np
-from imutils.video import VideoStream
+import picamera
+from picamera.array import PiRGBArray
 import imutils
 import time
 import DBManager
 import serial
 from manager import Manager
 
-IS_PI = False
 USE_GUI = False
 
 class Ball:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
-#Start webcam
-if IS_PI:
-    vs = VideoStream(src=0, usePiCamera=True,
-        resolution=(640,480), framerate=60).start()
-else:
-    vs = VideoStream(src=0).start()
 
 def find_ball(frame, mask):
     # Find contours and point
@@ -46,23 +39,25 @@ def find_ball(frame, mask):
 def nothing(x):
     pass
 
-blue_min = (90, 155, 60)
-blue_max = (160, 255, 255)
+blue_min = (0, 62, 219)
+blue_max = (65, 255, 255)
+
+
+cam = picamera.PiCamera(0)
+cam.resolution = (416, 416)
+#cam.framerate = 40
+cam.awb_mode = 'fluorescent'
+rawCapture = PiRGBArray(cam, size=(416, 416))
 
 mark = Manager()
 DBmark = DBManager.DBManager()
 
 def main():
-    while True:
+    for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
         start_time = time.time()
-        #640, 480
-        image = vs.read()
-        if image is None:
-            continue
+        image = frame.array
         orig = image.copy()
-        
-        #400, 400
-        image = imutils.resize(image, height = 400, width = 400)
+        rawCapture.truncate(0)
         
         hsv = cv2.cvtColor(image.copy(), cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, blue_min, blue_max)
@@ -70,7 +65,6 @@ def main():
         # Found it lmao
         res = find_ball(image, mask)
         if res is None:
-            cv2.imshow("Input feed", orig)
             continue
         else:
             (x,y), radius = res
@@ -93,7 +87,9 @@ def main():
             cv2.imshow("Mask", mask)
             cv2.imshow("Result", image)
             
-        ball = Ball((x_norm * 1.8) - 1, (y_norm * 1.8) - 1)
+        ball = Ball((x_norm * -2) + 1, (y_norm * -2) + 1)
+        DBmark.set_ball_pos(ball.x, ball.y)
+        DBmark.getNextStep()
         target = DBmark.array_data.target_coords
         mark.send(ball, target, delta_time)
         
@@ -101,8 +97,8 @@ def main():
         if key == ord("q"):
             break
 
-    vs.stop()
-
+  
     cv2.destroyAllWindows()
+    cam.close()
 
 main()
