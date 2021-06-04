@@ -36,5 +36,5 @@ class Manager:
         #self.__getData()
         self.uart = serial.Serial("/dev/ttyUSB0", 115200)
 
-    def send(self, ball, delta_time):
-        uart.write(struct.pack('fffff', ball.x, ball.y, 0.0, 0.0, delta_time))
+    def send(self, ball, target, delta_time):
+        uart.write(struct.pack('fffff', ball.x, ball.y, target[0], target[1], delta_time))

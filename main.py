@@ -3,6 +3,7 @@ import numpy as np
 from imutils.video import VideoStream
 import imutils
 import time
+import DBManager
 import serial
 from manager import Manager
 
@@ -49,6 +50,7 @@ blue_min = (90, 155, 60)
 blue_max = (160, 255, 255)
 
 mark = Manager()
+DBmark = DBManager.DBManager()
 
 def main():
     while True:
@@ -92,7 +94,8 @@ def main():
             cv2.imshow("Result", image)
             
         ball = Ball((x_norm * 1.8) - 1, (y_norm * 1.8) - 1)
-        mark.send(ball, delta_time)
+        target = DBmark.array_data.target_coords
+        mark.send(ball, target, delta_time)
         
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
