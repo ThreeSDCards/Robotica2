@@ -1,9 +1,12 @@
 class Ball:
-    def __init__(self):
-        self.old_pos = None
-        self.new_pos = None
+    def __init__(self, x, y):
+        self._x = x
+        self._y = y
 
-    def update(self, pos):
-        self.old_pos = self.new_pos
-        self.new_pos = pos
+    @property
+    def x(self):
+        return self._x
 
+    @property
+    def y(self):
+        return self._y
