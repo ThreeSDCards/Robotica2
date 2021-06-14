@@ -5,6 +5,7 @@ import time
 import DBManager
 import serial
 from manager import Manager
+from Timer import Timer
 from Camera import Camera
 
 USE_GUI = False
@@ -16,6 +17,7 @@ DBmark = DBManager.DBManager()
 
 def main():
     cam = Camera()
+    timer = Timer()
     for frame in cam:
         ball = frame.getCircle()
         if ball is None:
@@ -30,6 +32,8 @@ def main():
         target = DBmark.array_data.target_coords
         mark.send(ball, target, delta_time)
         
+        timer.print()
+
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
